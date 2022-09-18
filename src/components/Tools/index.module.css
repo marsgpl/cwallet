@@ -1,0 +1,19 @@
+.ModeTopLeft {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--input-height);
+    height: var(--input-height);
+    padding: 17px;
+    opacity: .4;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ModeTopLeft:hover {
+    opacity: .8;
+}
+
+.ModeTopLeft:active {
+    opacity: .4;
+}

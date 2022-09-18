@@ -1,0 +1,23 @@
+.Root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--action-menu-z);
+    background: rgba(0, 0, 0, .2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.Content {
+    width: 100%;
+    max-width: var(--content-max-width);
+    padding: 10px 10px 20px 10px;
+}
+
+.Button + .Button {
+    margin-top: 5px;
+}

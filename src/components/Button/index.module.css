@@ -1,0 +1,36 @@
+.Root {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0 auto;
+    border: none;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-tap-highlight-color: transparent;
+    height: var(--input-height);
+    min-width: calc(var(--input-height) * 2);
+    line-height: var(--input-height);
+    padding: 0 calc(var(--input-height) * .5);
+    border-radius: var(--input-border-radius);
+    font-size: var(--input-font-size);
+}
+
+.Root:active {
+    transform: scale(0.97);
+}
+
+.Wide {
+    display: block;
+    width: 100%;
+}
+
+.BgPrimary { background: var(--color-primary); color: #fff; }
+.BgPrimary:hover { background: var(--color-primary-hover); }
+
+.BgWhite { background: #fff; color: #000; }
+.BgWhite:hover { background: #eee; }
+
+.BgTrans { background: rgba(0, 0, 0, 0); color: #000; }
+.BgTrans:hover { background: rgba(0, 0, 0, .05); }
