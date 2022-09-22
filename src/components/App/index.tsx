@@ -1,16 +1,21 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { CoreData } from 'model/CoreData'
-import { loadCoreData, getCoreDataIv, CoreDataIV } from 'service/coreData'
+import { CoreData, CoreDataIV } from 'model/CoreData'
+import { loadCoreData, getCoreDataIv } from 'service/coreData'
 import { RequestKeyPage } from 'pages/RequestKeyPage'
 import { LoadingPage } from 'pages/LoadingPage'
-import { Toast as ToastModel } from 'model/Toast'
-import { ActionMenu as ActionMenuModel } from 'model/ActionMenu'
 import { Toast } from 'components/Toast'
 import { SetToastContext } from 'hooks/useToast'
 import { SetActionMenuContext } from 'hooks/useActionMenu'
 import { ActionMenu } from 'components/ActionMenu'
 import { stringifyError } from 'lib/stringifyError'
+import { SummaryPage } from 'pages/SummaryPage'
+import { ROUTE_ALL, ROUTE_CREATE_WALLET, ROUTE_IMPORT_WALLET, ROUTE_SUMMARY } from 'defs/routes'
+import { CreateWalletPage } from 'pages/CreateWalletPage'
+import { Toast as ToastModel } from 'model/Toast'
+import { ActionMenu as ActionMenuModel } from 'model/ActionMenu'
+import { ErrorPage } from 'pages/ErrorPage'
+import { ImportWalletPage } from 'pages/ImportWalletPage'
 
 export function App() {
     const [key, setKey] = React.useState<string>()
@@ -22,17 +27,22 @@ export function App() {
     React.useEffect(() => {
         if (!key) { return }
 
-        try {
-            const iv = getCoreDataIv()
-            const coreData = loadCoreData(key, iv)
+        let coreDataIv: CoreDataIV
 
-            setCoreDataIv(iv)
-            setCoreData(coreData)
-        } catch (error) {
-            throw Error('Decoding failed', {
-                cause: Error(stringifyError(error)),
+        getCoreDataIv()
+            .then(iv => {
+                coreDataIv = iv
+                return loadCoreData(key, iv)
             })
-        }
+            .then(coreData => {
+                setCoreDataIv(coreDataIv)
+                setCoreData(coreData)
+            })
+            .catch(error => {
+                throw Error('Decoding failed', {
+                    cause: Error(stringifyError(error)),
+                })
+            })
     }, [key])
 
     const renderContent = () => {
@@ -46,7 +56,17 @@ export function App() {
 
         return (
             <Routes>
-                <Route index element="TODO" />
+                <Route index element={<SummaryPage />} />
+
+                <Route path={ROUTE_SUMMARY} element={<SummaryPage />} />
+
+                <Route path={ROUTE_CREATE_WALLET} element={<CreateWalletPage />} />
+
+                <Route path={ROUTE_IMPORT_WALLET} element={<ImportWalletPage />} />
+
+                <Route path={ROUTE_ALL} element={<ErrorPage
+                    message="Unknown url"
+                />} />
             </Routes>
         )
     }

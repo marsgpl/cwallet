@@ -13,7 +13,10 @@ export interface RequestKeyPageProps {
 export function RequestKeyPage({ onSubmit }: RequestKeyPageProps) {
     const [key, setKey] = React.useState('')
 
-    const submit = () => onSubmit(key)
+    const submit = (event: React.FormEvent) => {
+        event.preventDefault()
+        onSubmit(key)
+    }
 
     const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
         setKey(event.target.value)
@@ -34,7 +37,7 @@ export function RequestKeyPage({ onSubmit }: RequestKeyPageProps) {
                 <InputText
                     leftIcon="lock"
                     inputAttrs={{
-                        placeholder: 'Key',
+                        placeholder: 'Encryption key',
                         type: 'password',
                         autoCorrect: 'off',
                         autoComplete: 'off',

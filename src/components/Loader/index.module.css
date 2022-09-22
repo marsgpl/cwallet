@@ -1,7 +1,7 @@
 .Root {
     animation: spin 1s linear infinite;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #555;
+    border: 5px solid rgba(0, 0, 0, 0);
+    border-top: 5px solid var(--color-primary);
     border-radius: 50%;
     width: 50px;
     height: 50px;

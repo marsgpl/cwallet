@@ -10,18 +10,18 @@ export interface ToastProps {
 
 let tmt: number
 
+const clearTmt = () => window.clearTimeout(tmt)
+
 export function Toast({ data }: ToastProps) {
     const setToast = useToast()
-
-    const close = () => setToast(undefined)
-    const clearTmt = () => clearTimeout(tmt)
-    const setTmt = () => tmt = window.setTimeout(close, TOAST_TTL_MS)
+    const close = React.useCallback(() => setToast(undefined), [setToast])
+    const setTmt = React.useCallback(() => tmt = window.setTimeout(close, TOAST_TTL_MS), [close])
 
     React.useEffect(() => {
         clearTmt()
         setTmt()
         return clearTmt
-    }, [data])
+    }, [data, setTmt])
 
     return (
         <div

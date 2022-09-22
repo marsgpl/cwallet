@@ -35,7 +35,7 @@ export function ErrorPage({
 
                 <Button
                     className={s.Button}
-                    text="Go to root"
+                    text="Home"
                     bg="white"
                     onClick={() => {
                         resetError?.()
