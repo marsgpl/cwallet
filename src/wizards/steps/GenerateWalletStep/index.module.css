@@ -1,0 +1,9 @@
+.Root {}
+
+.Input + .Input {
+    margin-top: 10px;
+}
+
+.GenerateButton {
+    margin-top: 5px;
+}

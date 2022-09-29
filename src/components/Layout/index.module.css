@@ -1,0 +1,73 @@
+.Root {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.LeftCol {
+    flex-shrink: 0;
+    width: 340px;
+    height: 100%;
+    background: rgba(0, 0, 0, .03);
+    display: flex;
+    flex-direction: column;
+}
+
+.RightCol {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.Header {
+    height: var(--header-height);
+    background: rgba(0, 0, 0, .03);
+    position: relative;
+    display: flex;
+}
+
+.HeaderClickable {
+    cursor: pointer;
+}
+
+.HeaderClickable:hover {
+    background: rgba(0, 0, 0, .06);
+}
+
+.HeaderClickable:active {
+    background: rgba(0, 0, 0, .09);
+}
+
+.HeaderTitle {
+    line-height: var(--header-height);
+    padding: 0 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.HeaderTitleWithRightIcon {
+    padding-right: 0;
+}
+
+.HeaderIcon {
+    width: var(--header-height);
+    height: var(--header-height);
+    padding: 25px;
+    opacity: .4;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+.HeaderIcon:hover {
+    opacity: .8;
+}
+
+.HeaderIcon:active {
+    opacity: .4;
+}

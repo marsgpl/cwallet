@@ -1,0 +1,4 @@
+.Root {
+    padding: 20px;
+    max-width: var(--content-max-width);
+}

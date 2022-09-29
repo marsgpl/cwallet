@@ -1,0 +1,23 @@
+.Root {
+    padding: 10px;
+}
+
+.RootLoader {
+    padding: 20px;
+}
+
+.Row {
+    padding: 8px 10px;
+    display: flex;
+}
+
+.Value {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Key + .Value {
+    margin-left: 8px;
+}

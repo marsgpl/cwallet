@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "plugins": [
+      { "name": "typescript-plugin-css-modules" },
+    ],
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -8,7 +11,7 @@
     ],
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -16,7 +19,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "rootDir": "src",
     "baseUrl": "src",
@@ -24,6 +26,5 @@
     "noImplicitAny": true,
     "sourceMap": false
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

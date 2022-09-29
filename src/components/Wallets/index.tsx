@@ -1,33 +1,39 @@
-import { Button } from 'components/Button'
-import { ROUTE_CREATE_WALLET, ROUTE_IMPORT_WALLET } from 'defs/routes'
-import { useNavigate } from 'react-router-dom'
+import { ROUTE_WALLET_BY_ID } from 'defs/routes'
+import { useWallets } from 'hooks/useWallets'
+import { cn } from 'lib/cn'
+import { Wallet } from 'model/Wallet'
+import { Link } from 'react-router-dom'
+import { equalWallets, getWalletId, getWalletTitle } from 'service/wallets'
 import s from './index.module.css'
 
 export interface WalletsProps {
+    wallet?: Wallet
 }
 
-export function Wallets({}: WalletsProps) {
-    const navigate = useNavigate()
+export function Wallets({
+    wallet,
+}: WalletsProps) {
+    const wallets = useWallets()
+
+    const empty = !wallets?.length
 
     return (
-        <div className={s.Root}>
-            <div className={s.Title}>
-                Wallets
-            </div>
+        <div className={cn(s.Root, empty && s.Empty)}>
+            {empty && 'Empty'}
 
-            <Button
-                text="Create"
-                onClick={() => {
-                    navigate(ROUTE_CREATE_WALLET)
-                }}
-            />
+            {wallets?.map(w => {
+                const id = getWalletId(w)
 
-            <Button
-                text="Import"
-                onClick={() => {
-                    navigate(ROUTE_IMPORT_WALLET)
-                }}
-            />
+                return (
+                    <Link
+                        key={id}
+                        className={cn(s.Row, equalWallets(w, wallet) && s.RowSelected)}
+                        to={ROUTE_WALLET_BY_ID.replace(/:walletId/, id)}
+                    >
+                        {getWalletTitle(w)}
+                    </Link>
+                )
+            })}
         </div>
     )
 }

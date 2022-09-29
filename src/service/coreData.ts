@@ -1,38 +1,44 @@
+import CryptoJS from 'crypto-js'
 import { CoreData, CoreDataIV } from 'model/CoreData'
 import { LOCAL_STORAGE_CORE_DATA_IV, LOCAL_STORAGE_CORE_DATA } from 'defs/localStorage'
-import { AES_CIPHER, AES_IV_BYTES } from 'defs/crypto'
-import { decrypt } from 'ethereum-cryptography/aes'
-import { utf8ToBytes, hexToBytes } from 'ethereum-cryptography/utils'
-import { getRandomBytes } from 'ethereum-cryptography/random'
-import { CHARSET_UTF8 } from 'defs/charset'
+import { AES_IV_BYTES } from 'defs/crypto'
 
-export async function loadCoreData(key: string, iv: CoreDataIV): Promise<CoreData> {
+export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
     const encrypted = localStorage.getItem(LOCAL_STORAGE_CORE_DATA)
 
     if (encrypted === null) {
-        return []
+        return {
+            wallets: [],
+        }
     }
 
-    const decrypted = await decrypt(utf8ToBytes(encrypted), utf8ToBytes(key), iv, AES_CIPHER)
-    const decoded = Buffer.from(decrypted).toString(CHARSET_UTF8)
+    const decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv })
+    const decoded = decrypted.toString(CryptoJS.enc.Utf8)
     const parsed = JSON.parse(decoded)
 
-    if (!Array.isArray(parsed)) {
-        throw Error
+    if (!parsed || typeof parsed !== 'object') {
+        throw Error('Core data must be Object')
     }
 
     return parsed as CoreData
 }
 
-export async function getCoreDataIv(): Promise<CoreDataIV> {
+export function getCoreDataIv(): CoreDataIV {
     const hex = localStorage.getItem(LOCAL_STORAGE_CORE_DATA_IV)
 
     if (hex) {
-        return hexToBytes(hex)
+        return CryptoJS.enc.Hex.parse(hex)
     } else {
-        const iv = await getRandomBytes(AES_IV_BYTES)
-        const hex = Buffer.from(iv).toString(CHARSET_UTF8)
+        const iv = CryptoJS.lib.WordArray.random(AES_IV_BYTES)
+        const hex = CryptoJS.enc.Hex.stringify(iv)
         localStorage.setItem(LOCAL_STORAGE_CORE_DATA_IV, hex)
         return iv
     }
+}
+
+export function saveCoreData(coreData: CoreData, key: string, iv: CoreDataIV) {
+    const encoded = JSON.stringify(coreData)
+    const encrypted = CryptoJS.AES.encrypt(encoded, key, { iv }).toString()
+
+    localStorage.setItem(LOCAL_STORAGE_CORE_DATA, encrypted)
 }

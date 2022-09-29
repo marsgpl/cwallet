@@ -1,0 +1,9 @@
+.Root {}
+
+.Select {
+    width: 100%;
+}
+
+.Input + .Input {
+    margin-top: 10px;
+}

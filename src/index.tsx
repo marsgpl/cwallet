@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { App } from 'components/App'
 import { ErrorBoundary } from 'components/ErrorBoundary'
@@ -15,12 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const root = ReactDOM.createRoot(container)
 
     root.render(
-        <React.StrictMode>
-            <HashRouter>
-                <ErrorBoundary>
-                    <App />
-                </ErrorBoundary>
-            </HashRouter>
-        </React.StrictMode>
+        <HashRouter>
+            <ErrorBoundary>
+                <App />
+            </ErrorBoundary>
+        </HashRouter>
     )
 })

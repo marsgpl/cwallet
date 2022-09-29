@@ -1,7 +1,56 @@
 .Root {
-    padding: 10px;
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.Title {
-    font-weight: 500;
+.Empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    padding: var(--page-padding);
+    overflow: hidden;
+}
+
+.Row {
+    display: block;
+    padding: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    position: relative;
+}
+
+.Row:hover {
+    background: rgba(0, 0, 0, .06);
+}
+
+.Row:active {
+    background: var(--bg-color);
+}
+
+.Row + .Row::before {
+    content: '';
+    position: absolute;
+    background: rgba(0, 0, 0, .06);
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+}
+
+.RowSelected,
+.RowSelected:hover {
+    background: var(--bg-color);
+}
+
+.Row:hover::before,
+.Row:hover + .Row::before,
+.RowSelected::before,
+.RowSelected + .Row::before {
+    display: none;
 }

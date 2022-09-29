@@ -33,15 +33,15 @@ body,
 }
 
 :root {
+    --bg-color: #f4f4f4;
     --color-primary: #67a0eb;
     --color-primary-hover: #588bcd;
     --page-padding: 30px;
     --content-max-width: 600px;
+    --header-height: 66px;
     --input-height: 52px;
-    --header-height: 52px;
     --toast-height: 52px;
     --input-font-size: 16px;
     --input-border-radius: 3px;
-    --header-z: 1000;
     --action-menu-z: 10000;
 }
