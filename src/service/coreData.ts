@@ -2,6 +2,8 @@ import CryptoJS from 'crypto-js'
 import { CoreData, CoreDataIV } from 'model/CoreData'
 import { LOCAL_STORAGE_CORE_DATA_IV, LOCAL_STORAGE_CORE_DATA } from 'defs/localStorage'
 import { AES_IV_BYTES } from 'defs/crypto'
+import { CHAIN_TICKER_ETH } from 'model/Chain'
+import { getEthAddressFromPrivateKey } from './wallets'
 
 export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
     const encrypted = localStorage.getItem(LOCAL_STORAGE_CORE_DATA)
@@ -20,7 +22,11 @@ export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
         throw Error('Core data must be Object')
     }
 
-    return parsed as CoreData
+    const coreData = parsed as CoreData
+
+    fixCoreData(coreData)
+
+    return coreData
 }
 
 export function getCoreDataIv(): CoreDataIV {
@@ -41,4 +47,18 @@ export function saveCoreData(coreData: CoreData, key: string, iv: CoreDataIV) {
     const encrypted = CryptoJS.AES.encrypt(encoded, key, { iv }).toString()
 
     localStorage.setItem(LOCAL_STORAGE_CORE_DATA, encrypted)
+}
+
+function fixCoreData(coreData: CoreData) {
+    coreData.wallets.forEach(wallet => {
+        if (!wallet.address && wallet.privateKey) {
+            if (wallet.ticker === CHAIN_TICKER_ETH) {
+                try {
+                    wallet.address = getEthAddressFromPrivateKey(wallet.privateKey)
+                } catch (error) {
+                    console.error('🔺 fixCoreData wallet:', wallet, 'error:', error)
+                }
+            }
+        }
+    })
 }

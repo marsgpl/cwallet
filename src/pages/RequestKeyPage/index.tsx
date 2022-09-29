@@ -18,10 +18,6 @@ export function RequestKeyPage({ onSubmit }: RequestKeyPageProps) {
         onSubmit(key)
     }
 
-    const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-        setKey(event.target.value)
-    }
-
     return (
         <div className={s.Root}>
             <Icon className={s.Logo} id="logo" />
@@ -44,7 +40,7 @@ export function RequestKeyPage({ onSubmit }: RequestKeyPageProps) {
                         spellCheck: false,
                         autoFocus: true,
                         required: true,
-                        onChange,
+                        onChange: event => setKey(event.target.value),
                     }}
                 />
 

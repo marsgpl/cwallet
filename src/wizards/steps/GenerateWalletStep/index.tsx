@@ -36,6 +36,13 @@ export function GenerateWalletStep({
     const generate = () => {
         if (ticker === CHAIN_TICKER_ETH) {
             setWallet(generateEthWallet())
+// while (true) {
+//     const wallet = generateEthWallet()
+//     if (wallet.address.substring(0, 7) === '0x00000') {
+//         setWallet(wallet)
+//         break
+//     }
+// }
         }
     }
 

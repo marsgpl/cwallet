@@ -3,7 +3,6 @@ import { Button } from 'components/Button'
 import { Select } from 'components/Select'
 import { ChainTicker, CHAIN_TICKER_ETH } from 'model/Chain'
 import { selectChainOptions } from 'service/chains'
-import { cn } from 'lib/cn'
 import s from './index.module.css'
 
 export interface SelectChainStepFormData {
@@ -35,7 +34,7 @@ export function SelectChainStep({
             onSubmit={submit}
         >
             <Select<ChainTicker>
-                className={cn(s.Select, s.Input)}
+                className={s.Input}
                 options={selectChainOptions()}
                 onChange={setTicker}
                 selectAttrs={{

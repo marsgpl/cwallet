@@ -23,12 +23,13 @@ export function Wallets({
 
             {wallets?.map(w => {
                 const id = getWalletId(w)
+                const address = w.address
 
                 return (
                     <Link
                         key={id}
                         className={cn(s.Row, equalWallets(w, wallet) && s.RowSelected)}
-                        to={ROUTE_WALLET_BY_ID.replace(/:walletId/, id)}
+                        to={address ? ROUTE_WALLET_BY_ID.replace(/:walletId/, id) : ''}
                     >
                         {getWalletTitle(w)}
                     </Link>

@@ -71,3 +71,13 @@
 .HeaderIcon:active {
     opacity: .4;
 }
+
+.HeaderIconPin {
+    position: absolute;
+    top: 17px;
+    right: 21px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: red;
+}

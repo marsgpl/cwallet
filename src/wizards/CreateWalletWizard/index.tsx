@@ -4,29 +4,20 @@ import { Wallet } from 'model/Wallet'
 import { GenerateWalletStep } from 'wizards/steps/GenerateWalletStep'
 import { SelectChainStep } from 'wizards/steps/SelectChainStep'
 import { SetWalletTitleStep } from 'wizards/steps/SetWalletTitleStep'
-import { useNavigate } from 'react-router-dom'
-import { useToast } from 'hooks/useToast'
-import { ROUTE_SUMMARY } from 'defs/routes'
 import s from './index.module.css'
+import { useWalletsActions } from 'hooks/useWalletsActions'
 
-export interface CreateWalletWizardProps {
-    onAdd: (wallet: Wallet) => void
-}
+export interface CreateWalletWizardProps {}
 
-export function CreateWalletWizard({ onAdd }: CreateWalletWizardProps) {
-    const navigate = useNavigate()
-    const setToast = useToast()
+export function CreateWalletWizard({}: CreateWalletWizardProps) {
+    const { addWallet } = useWalletsActions()
 
     const [ticker, setTicker] = React.useState<ChainTicker>()
     const [wallet, setWallet] = React.useState<Wallet>()
 
     React.useEffect(() => {
         if (wallet?.title !== undefined) {
-            onAdd(wallet)
-            setToast({
-                message: 'Wallet saved',
-            })
-            navigate(ROUTE_SUMMARY)
+            addWallet(wallet)
         }
     }, [wallet?.title === undefined])
 
