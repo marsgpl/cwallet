@@ -38,7 +38,7 @@ export function SelectChainStep({
                 options={selectChainOptions()}
                 onChange={setTicker}
                 selectAttrs={{
-                    value: ticker,
+                    defaultValue: ticker,
                     required: true,
                 }}
             />

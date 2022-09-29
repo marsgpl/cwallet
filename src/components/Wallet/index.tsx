@@ -19,8 +19,6 @@ export function Wallet({}: WalletProps) {
 
     return (
         <div className={s.Root}>
-            title: {wallet.title}
-            <br />
             ticker: {wallet.ticker}
             <br />
             address: <a

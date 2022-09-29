@@ -34,5 +34,3 @@ npm run build
 ```
 
 ## TODO
-
-- create eth wallet

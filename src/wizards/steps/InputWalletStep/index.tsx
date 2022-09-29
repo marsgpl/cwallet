@@ -83,7 +83,7 @@ export function InputWalletStep({
                 options={SELECT_IMPORT_TYPE_OPTIONS}
                 onChange={setImportType}
                 selectAttrs={{
-                    value: importType,
+                    defaultValue: '',
                     required: true,
                 }}
             />

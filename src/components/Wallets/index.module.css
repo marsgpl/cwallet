@@ -14,8 +14,11 @@
 }
 
 .Row {
-    display: block;
-    padding: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    line-height: var(--header-height);
+    height: var(--header-height);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,4 +56,23 @@
 .RowSelected::before,
 .RowSelected + .Row::before {
     display: none;
+}
+
+.Icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 14px;
+}
+
+.Label {
+    color: #fff;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 6px;
+    background: #777;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 10px;
+    margin-right: 14px;
+    text-transform: uppercase;
 }

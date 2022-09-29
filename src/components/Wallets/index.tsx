@@ -1,3 +1,4 @@
+import { Icon } from 'components/Icon'
 import { ROUTE_WALLET_BY_ID } from 'defs/routes'
 import { useWallets } from 'hooks/useWallets'
 import { cn } from 'lib/cn'
@@ -24,6 +25,7 @@ export function Wallets({
             {wallets?.map(w => {
                 const id = getWalletId(w)
                 const address = w.address
+                const isOwn = Boolean(w.privateKey)
 
                 return (
                     <Link
@@ -31,6 +33,13 @@ export function Wallets({
                         className={cn(s.Row, equalWallets(w, wallet) && s.RowSelected)}
                         to={address ? ROUTE_WALLET_BY_ID.replace(/:walletId/, id) : ''}
                     >
+                        <Icon
+                            className={s.Icon}
+                            id={w.ticker.toLowerCase() as any}
+                        />
+
+                        {!isOwn && <div className={s.Label}>RO</div>}
+
                         {getWalletTitle(w)}
                     </Link>
                 )

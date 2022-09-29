@@ -1,7 +1,7 @@
 {
   "name": "@marsgpl/cwallet",
   "description": "Non-custodial crypto wallet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "author": "marsgpl",
   "repository": {
@@ -33,10 +33,10 @@
     "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "typescript": "^4.8.3",
+    "typescript": "^4.7.4",
     "typescript-plugin-css-modules": "^3.4.0",
     "url": "^0.11.0",
-    "web3": "^4.0.1-alpha.0"
+    "web3": "^1.8.0"
   },
   "scripts": {
     "start": "PORT=3001 react-app-rewired start",

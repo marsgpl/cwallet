@@ -26,13 +26,6 @@ export interface SelectProps<T> {
     selectAttrs?: React.InputHTMLAttributes<HTMLSelectElement>
 }
 
-function getDefaultValue(
-    selectAttrs: React.InputHTMLAttributes<HTMLSelectElement> | undefined,
-    options: SelectOptions
-): string | undefined {
-    return ''
-}
-
 export function Select<T extends string>({
     options,
     onChange,
@@ -58,7 +51,6 @@ export function Select<T extends string>({
                 ref={() => selectRef}
                 onChange={event => onChange(event.target.value as T)}
                 className={cn(s.Select, selectAttrs?.className)}
-                defaultValue={getDefaultValue(selectAttrs, options)}
             >
                 {options.map(({
                     title,

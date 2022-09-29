@@ -26,8 +26,8 @@ export function createWalletTemplate(ticker: ChainTicker): Wallet {
     }
 }
 
-export function getWalletTitle({ title, ticker, address }: Wallet): string {
-    return `[${ticker}] ${title || address}`
+export function getWalletTitle({ title, address }: Wallet): string {
+    return title || address
 }
 
 export function getWalletId({ ticker, address }: Wallet): string {

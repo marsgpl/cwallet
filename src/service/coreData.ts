@@ -5,6 +5,11 @@ import { AES_IV_BYTES } from 'defs/crypto'
 import { CHAIN_TICKER_ETH } from 'model/Chain'
 import { getEthAddressFromPrivateKey } from './wallets'
 
+export const CORE_DATA_STORAGE_KEYS = [
+    LOCAL_STORAGE_CORE_DATA,
+    LOCAL_STORAGE_CORE_DATA_IV,
+]
+
 export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
     const encrypted = localStorage.getItem(LOCAL_STORAGE_CORE_DATA)
 
@@ -61,4 +66,12 @@ function fixCoreData(coreData: CoreData) {
             }
         }
     })
+}
+
+export function eraseCoreData() {
+    localStorage.removeItem(LOCAL_STORAGE_CORE_DATA)
+}
+
+export function eraseCoreDataIv() {
+    localStorage.removeItem(LOCAL_STORAGE_CORE_DATA_IV)
 }
