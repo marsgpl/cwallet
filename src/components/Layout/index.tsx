@@ -32,10 +32,10 @@ export function Layout({
     const showTools = () => {
         setActionMenu({
             buttons: [
-                {
-                    text: 'Summary',
-                    onClick: () => navigate(ROUTE_SUMMARY),
-                },
+                // {
+                //     text: 'Summary',
+                //     onClick: () => navigate(ROUTE_SUMMARY),
+                // },
                 {
                     text: 'Create new wallet',
                     onClick: () => navigate(ROUTE_CREATE_WALLET),
