@@ -73,7 +73,7 @@ export function equalWallets(w1?: Wallet, w2?: Wallet): boolean {
 }
 
 export function isInvalidWallet(wallet: Wallet): boolean {
-    return !wallet.address
+    return !Web3.utils.isAddress(wallet.address)
 }
 
 export function getInvalidWallets(wallets: Wallet[]): Wallet[] {

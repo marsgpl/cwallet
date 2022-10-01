@@ -36,3 +36,6 @@ npm run build
 ## TODO
 
 - popup
+- balances saving
+- global web3
+- state management maybe

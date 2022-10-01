@@ -2,3 +2,7 @@
     padding: 20px;
     max-width: var(--content-max-width);
 }
+
+.Input + .Input {
+    margin-top: 10px;
+}
