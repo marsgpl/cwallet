@@ -1,8 +1,8 @@
 import React from 'react'
 import { Icon, IconId } from 'components/Icon'
 import { Route } from 'defs/routes'
+import { useNav } from 'hooks/useNav'
 import { cn } from 'lib/cn'
-import { useNavigate } from 'react-router-dom'
 import s from './index.module.css'
 
 export interface InputTextProps {
@@ -32,7 +32,7 @@ export function InputText({
 }: InputTextProps) {
     const [value, setValue] = React.useState('')
 
-    const navigate = useNavigate()
+    const { goTo } = useNav()
 
     const placeholder = inputAttrs?.placeholder
 
@@ -44,13 +44,13 @@ export function InputText({
 
     const getAction = React.useCallback((action: Action) => {
         if (typeof action === 'string') {
-            return () => navigate(action)
+            return () => goTo(action)
         }
 
         if (typeof action === 'function') {
             return action
         }
-    }, [navigate])
+    }, [goTo])
 
     return (
         <label className={cn(

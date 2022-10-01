@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { NavigateOptions, Route, Routes, To, useNavigate } from 'react-router-dom'
 import { CoreData, CoreDataIV } from 'model/CoreData'
 import { loadCoreData, getCoreDataIv, saveCoreData } from 'service/coreData'
 import { RequestKeyPage } from 'pages/RequestKeyPage'
@@ -31,17 +31,25 @@ import { WalletPage } from 'pages/WalletPage'
 import { equalWallets, getWalletId } from 'service/wallets'
 import { WalletsActionsContext } from 'hooks/useWalletsActions'
 import { TransferPage } from 'pages/TransferPage'
+import { NavContext } from 'hooks/useNav'
 
 export function App() {
     const [key, setKey] = React.useState<string>()
     const [toast, setToast] = React.useState<ToastModel>()
     const [actionMenu, setActionMenu] = React.useState<ActionMenuModel>()
-    const navigate = useNavigate()
-
+    const [mobMenuShown, setMobMenuShown] = React.useState(false)
     const [coreDataIv, setCoreDataIv] = React.useState<CoreDataIV>()
     const [coreData, setCoreData] = React.useState<CoreData>()
-
     const [balances, setBalances] = React.useState<WalletBalances>(new Map)
+    const navigate = useNavigate()
+
+    const goTo = React.useCallback((to: To, options?: NavigateOptions) => {
+        navigate(to, options)
+        setMobMenuShown(false)
+    }, [
+        navigate,
+        setMobMenuShown,
+    ])
 
     const updateWallet = React.useCallback((wallet: Wallet) => {
         if (!key) { return }
@@ -79,7 +87,7 @@ export function App() {
 
         setCoreData(newCoreData)
         saveCoreData(newCoreData, key, coreDataIv)
-        navigate(routeWallet(getWalletId(wallet)))
+        goTo(routeWallet(getWalletId(wallet)))
         setToast({
             message: 'Wallet added',
         })
@@ -107,7 +115,7 @@ export function App() {
 
         setCoreData(newCoreData)
         saveCoreData(newCoreData, key, coreDataIv)
-        navigate(ROUTE_SUMMARY)
+        goTo(ROUTE_SUMMARY)
         setToast({
             message: `${idsToDel.size} wallet${idsToDel.size === 1 ? ' was' : 's were'} deleted`,
         })
@@ -156,20 +164,26 @@ export function App() {
     }
 
     return (
+        <NavContext.Provider value={{
+            mobMenuShown,
+            setMobMenuShown,
+            goTo,
+        }}>
         <WalletsActionsContext.Provider value={{
             addWallet,
             deleteWallets,
             updateWallet,
         }}>
-            <WalletsContext.Provider value={coreData?.wallets}>
-                <SetToastContext.Provider value={setToast}>
-                    <SetActionMenuContext.Provider value={setActionMenu}>
-                        {renderContent()}
-                        {toast ? <Toast data={toast} /> : null}
-                        {actionMenu ? <ActionMenu data={actionMenu} /> : null}
-                    </SetActionMenuContext.Provider>
-                </SetToastContext.Provider>
-            </WalletsContext.Provider>
+        <WalletsContext.Provider value={coreData?.wallets}>
+        <SetToastContext.Provider value={setToast}>
+        <SetActionMenuContext.Provider value={setActionMenu}>
+            {renderContent()}
+            {toast ? <Toast data={toast} /> : null}
+            {actionMenu ? <ActionMenu data={actionMenu} /> : null}
+        </SetActionMenuContext.Provider>
+        </SetToastContext.Provider>
+        </WalletsContext.Provider>
         </WalletsActionsContext.Provider>
+        </NavContext.Provider>
     )
 }

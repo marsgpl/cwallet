@@ -1,18 +1,19 @@
 import React from 'react'
 import Web3 from 'web3'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useWallets } from 'hooks/useWallets'
 import { useCopyValue } from 'hooks/useCopyValue'
 import { Button } from 'components/Button'
 import { routeTransfer } from 'defs/routes'
 import { useWallet } from 'hooks/useWalletById'
 import s from './index.module.css'
+import { useNav } from 'hooks/useNav'
 
 export interface WalletPageProps {
 }
 
 export function WalletPage({}: WalletPageProps) {
-    const navigate = useNavigate()
+    const { goTo } = useNav()
     const copyValue = useCopyValue()
     const wallets = useWallets()
     const { walletId } = useParams()
@@ -76,7 +77,7 @@ export function WalletPage({}: WalletPageProps) {
                 <br />
                 <br />
 
-                <Button text="Transfer" onClick={() => navigate(routeTransfer(walletId))} />
+                <Button text="Transfer" onClick={() => goTo(routeTransfer(walletId))} />
             </>}
         </div>
     )

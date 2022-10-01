@@ -6,11 +6,16 @@
 
 .Empty {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.EmptyOr {
     color: #999;
-    padding: var(--page-padding);
-    overflow: hidden;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px;
 }
 
 .Row {

@@ -1,7 +1,6 @@
 import { Button } from 'components/Button'
 import { DEFAULT_ERROR_MESSAGE } from 'defs/messages'
 import { ROUTE_INDEX } from 'defs/routes'
-import { useNavigate } from 'react-router-dom'
 import s from './index.module.css'
 
 export interface ErrorPageProps {
@@ -13,12 +12,14 @@ function refresh() {
     window.location.reload()
 }
 
+function goTo(to: string) {
+    window.location.hash = '#' + to
+}
+
 export function ErrorPage({
     message,
     resetError,
 }: ErrorPageProps) {
-    const navigate = useNavigate()
-
     return (
         <div className={s.Root}>
             <div className={s.Message}>
@@ -39,7 +40,7 @@ export function ErrorPage({
                     bg="white"
                     onClick={() => {
                         resetError?.()
-                        navigate(ROUTE_INDEX)
+                        goTo(ROUTE_INDEX)
                     }}
                 />
             </div>

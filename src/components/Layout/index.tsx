@@ -3,13 +3,14 @@ import { Wallets } from 'components/Wallets'
 import { Icon } from 'components/Icon'
 import { ROUTE_CREATE_WALLET, ROUTE_IMPORT_WALLET, ROUTE_SUMMARY } from 'defs/routes'
 import { useActionMenu } from 'hooks/useActionMenu'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getInvalidWallets, getWalletTitle } from 'service/wallets'
 import { useWallets } from 'hooks/useWallets'
 import { ActionMenuButtons } from 'model/ActionMenu'
 import { useWalletsActions } from 'hooks/useWalletsActions'
 import { useWallet } from 'hooks/useWalletById'
 import { cn } from 'lib/cn'
+import { useNav } from 'hooks/useNav'
 import s from './index.module.css'
 
 export interface LayoutBreadcrumb {
@@ -29,12 +30,11 @@ export function Layout({
     children,
 }: LayoutProps) {
     const setActionMenu = useActionMenu()
-    const navigate = useNavigate()
+    const { goTo, mobMenuShown, setMobMenuShown } = useNav()
     const { walletId } = useParams()
     const wallets = useWallets()
     const wallet = useWallet(walletId, wallets)
     const { deleteWallets, updateWallet } = useWalletsActions()
-    const [menuShown, setMenuShown] = React.useState(false)
     const invalidWallets = React.useMemo(() => wallets && getInvalidWallets(wallets) || [], [wallets])
     const hasInvalidWallets = Boolean(invalidWallets.length)
     const needPin = hasInvalidWallets
@@ -72,22 +72,19 @@ export function Layout({
                 {
                     text: 'Summary',
                     onClick: () => {
-                        navigate(ROUTE_SUMMARY)
-                        setMenuShown(false)
+                        goTo(ROUTE_SUMMARY)
                     }
                 },
                 {
                     text: 'Create new wallet',
                     onClick: () => {
-                        navigate(ROUTE_CREATE_WALLET)
-                        setMenuShown(false)
+                        goTo(ROUTE_CREATE_WALLET)
                     }
                 },
                 {
                     text: 'Import wallet',
                     onClick: () => {
-                        navigate(ROUTE_IMPORT_WALLET)
-                        setMenuShown(false)
+                        goTo(ROUTE_IMPORT_WALLET)
                     }
                 },
                 hasInvalidWallets && {
@@ -95,7 +92,6 @@ export function Layout({
                     textColor: 'red',
                     onClick: () => {
                         deleteWallets(invalidWallets)
-                        setMenuShown(false)
                     }
                 },
             ].filter(Boolean) as ActionMenuButtons
@@ -103,12 +99,12 @@ export function Layout({
     }
 
     return (
-        <div className={cn(s.Root, menuShown ? s.MenuShown : s.MenuHidden)}>
-            <div className={s.LeftColShadow} onClick={() => setMenuShown(false)} />
+        <div className={cn(s.Root, mobMenuShown ? s.MenuShown : s.MenuHidden)}>
+            <div className={s.LeftColShadow} onClick={() => setMobMenuShown(false)} />
 
             <div className={s.LeftCol}>
                 <div className={s.Header}>
-                    <div className={s.HideMenu} onClick={() => setMenuShown(false)}>
+                    <div className={s.HideMenu} onClick={() => setMobMenuShown(false)}>
                         <Icon id="close" />
                     </div>
 
@@ -130,14 +126,12 @@ export function Layout({
                     </div>
                 </div>
 
-                <Wallets wallet={wallet} onWalletClick={() => {
-                    setMenuShown(false)
-                }} />
+                <Wallets wallet={wallet} />
             </div>
 
             <div className={s.RightCol}>
                 <div className={s.Header}>
-                    <div className={s.ShowMenu} onClick={() => setMenuShown(true)}>
+                    <div className={s.ShowMenu} onClick={() => setMobMenuShown(true)}>
                         <Icon id="menu" />
                     </div>
 

@@ -1,28 +1,42 @@
 import { Icon } from 'components/Icon'
-import { routeWallet, ROUTE_WALLET } from 'defs/routes'
+import { routeWallet, ROUTE_CREATE_WALLET, ROUTE_IMPORT_WALLET } from 'defs/routes'
 import { useWallets } from 'hooks/useWallets'
 import { Wallet } from 'model/Wallet'
-import { Link } from 'react-router-dom'
 import { equalWallets, getWalletId, getWalletTitle } from 'service/wallets'
+import { Button } from 'components/Button'
+import { useNav } from 'hooks/useNav'
 import { cn } from 'lib/cn'
 import s from './index.module.css'
 
 export interface WalletsProps {
     wallet?: Wallet
-    onWalletClick?: () => void
 }
 
 export function Wallets({
     wallet,
-    onWalletClick,
 }: WalletsProps) {
     const wallets = useWallets()
+    const { goTo } = useNav()
 
     const empty = !wallets?.length
 
     return (
         <div className={cn(s.Root, empty && s.Empty)}>
-            {empty && 'Empty'}
+            {empty && <>
+                <Button
+                    size="m"
+                    text="Create"
+                    onClick={() => goTo(ROUTE_CREATE_WALLET)}
+                />
+
+                <div className={s.EmptyOr}>or</div>
+
+                <Button
+                    size="m"
+                    text="Import"
+                    onClick={() => goTo(ROUTE_IMPORT_WALLET)}
+                />
+            </>}
 
             {wallets?.map(w => {
                 const id = getWalletId(w)
@@ -30,11 +44,10 @@ export function Wallets({
                 const isOwn = Boolean(w.privateKey)
 
                 return (
-                    <Link
+                    <div
                         key={id}
                         className={cn(s.Row, equalWallets(w, wallet) && s.RowSelected)}
-                        to={address ? routeWallet(id) : ''}
-                        onClick={onWalletClick}
+                        onClick={address ? () => goTo(routeWallet(id)) : undefined}
                     >
                         <Icon
                             className={s.Icon}
@@ -46,7 +59,7 @@ export function Wallets({
                         <div className={s.Title}>
                             {getWalletTitle(w)}
                         </div>
-                    </Link>
+                    </div>
                 )
             })}
         </div>

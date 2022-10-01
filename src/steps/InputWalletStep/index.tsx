@@ -4,11 +4,17 @@ import { Wallet } from 'model/Wallet'
 import { InputText } from 'components/InputText'
 import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
 import { Button } from 'components/Button'
-import { createWalletTemplate, getEthAddressFromPrivateKey, getWalletById, getWalletId, isInvalidWallet } from 'service/wallets'
-import { useNavigate } from 'react-router-dom'
-import s from './index.module.css'
+import {
+    createWalletTemplate,
+    getEthAddressFromPrivateKey,
+    getWalletById,
+    getWalletId,
+    isInvalidWallet,
+} from 'service/wallets'
 import { ROUTE_SUMMARY } from 'defs/routes'
 import { useWallets } from 'hooks/useWallets'
+import { useNav } from 'hooks/useNav'
+import s from './index.module.css'
 
 const enum IMPORT_TYPE {
     ADDRESS = 'address',
@@ -43,7 +49,7 @@ export function InputWalletStep({
     ticker,
     onSubmit,
 }: InputWalletStepProps) {
-    const navigate = useNavigate()
+    const { goTo } = useNav()
     const wallets = useWallets()
     const [importType, setImportType] = React.useState<IMPORT_TYPE>(IMPORT_TYPE.PRIVATE_KEY)
     const [privateKey, setPrivateKey] = React.useState('')
@@ -75,12 +81,12 @@ export function InputWalletStep({
         }
 
         if (isInvalidWallet(wallet)) {
-            navigate(ROUTE_SUMMARY)
+            goTo(ROUTE_SUMMARY)
             return window.alert('Wallet is invalid')
         }
 
         if (getWalletById(wallets, getWalletId(wallet))) {
-            navigate(ROUTE_SUMMARY)
+            goTo(ROUTE_SUMMARY)
             return window.alert('Wallet is already added')
         }
 
