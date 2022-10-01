@@ -1,18 +1,20 @@
 import { Icon } from 'components/Icon'
-import { ROUTE_WALLET_BY_ID } from 'defs/routes'
+import { routeWallet, ROUTE_WALLET } from 'defs/routes'
 import { useWallets } from 'hooks/useWallets'
-import { cn } from 'lib/cn'
 import { Wallet } from 'model/Wallet'
 import { Link } from 'react-router-dom'
 import { equalWallets, getWalletId, getWalletTitle } from 'service/wallets'
+import { cn } from 'lib/cn'
 import s from './index.module.css'
 
 export interface WalletsProps {
     wallet?: Wallet
+    onWalletClick?: () => void
 }
 
 export function Wallets({
     wallet,
+    onWalletClick,
 }: WalletsProps) {
     const wallets = useWallets()
 
@@ -31,7 +33,8 @@ export function Wallets({
                     <Link
                         key={id}
                         className={cn(s.Row, equalWallets(w, wallet) && s.RowSelected)}
-                        to={address ? ROUTE_WALLET_BY_ID.replace(/:walletId/, id) : ''}
+                        to={address ? routeWallet(id) : ''}
+                        onClick={onWalletClick}
                     >
                         <Icon
                             className={s.Icon}
@@ -40,7 +43,9 @@ export function Wallets({
 
                         {!isOwn && <div className={s.Label}>RO</div>}
 
-                        {getWalletTitle(w)}
+                        <div className={s.Title}>
+                            {getWalletTitle(w)}
+                        </div>
                     </Link>
                 )
             })}

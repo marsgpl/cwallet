@@ -13,3 +13,12 @@ export interface WalletETH extends BaseWallet {
 
 export type Wallet =
     | WalletETH
+
+export type WalletId = string
+
+export interface WalletBalance {
+    ts: number
+    value: string
+}
+
+export type WalletBalances = Map<string, WalletBalance>

@@ -1,17 +1,15 @@
 import { Loader } from 'components/Loader'
-import { Money } from 'components/Money'
 import { useWallets } from 'hooks/useWallets'
 import { cn } from 'lib/cn'
 import s from './index.module.css'
 
-export interface SummaryProps {
+export interface SummaryPageProps {
 }
 
-export function Summary({}: SummaryProps) {
+export function SummaryPage({}: SummaryPageProps) {
     const wallets = useWallets()
 
     const ready = wallets !== undefined
-    const noWallets = !wallets?.length
 
     if (!ready) {
         return (
@@ -23,17 +21,6 @@ export function Summary({}: SummaryProps) {
 
     return (
         <div className={s.Root}>
-            <div className={s.Row}>
-                <div className={s.Key}>Total value:</div>
-                <div className={s.Value}>
-                    {noWallets ? (
-                        <Money value={0} />
-                    ) : (
-                        <Loader mini />
-                    )}
-                </div>
-            </div>
-
             <div className={s.Row}>
                 <div className={s.Key}>Wallets:</div>
                 <div className={s.Value}>

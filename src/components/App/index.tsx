@@ -10,32 +10,38 @@ import { SetActionMenuContext } from 'hooks/useActionMenu'
 import { ActionMenu } from 'components/ActionMenu'
 import { stringifyError } from 'lib/stringifyError'
 import {
+    routeWallet,
     ROUTE_ALL,
     ROUTE_CREATE_WALLET,
     ROUTE_IMPORT_WALLET,
     ROUTE_SUMMARY,
-    ROUTE_WALLET_BY_ID,
+    ROUTE_TRANSFER,
+    ROUTE_WALLET,
 } from 'defs/routes'
 import { Toast as ToastModel } from 'model/Toast'
 import { ActionMenu as ActionMenuModel } from 'model/ActionMenu'
 import { ErrorPage } from 'pages/ErrorPage'
 import { Layout } from 'components/Layout'
-import { Summary } from 'components/Summary'
-import { CreateWalletWizard } from 'wizards/CreateWalletWizard'
-import { ImportWalletWizard } from 'wizards/ImportWalletWizard'
+import { SummaryPage } from 'pages/SummaryPage'
+import { CreateWalletPage } from 'pages/CreateWalletPage'
+import { ImportWalletPage } from 'pages/ImportWalletPage'
 import { WalletsContext } from 'hooks/useWallets'
-import { Wallet } from 'model/Wallet'
-import { Wallet as WalletSummary } from 'components/Wallet'
+import { Wallet, WalletBalances } from 'model/Wallet'
+import { WalletPage } from 'pages/WalletPage'
 import { getWalletId } from 'service/wallets'
 import { WalletsActionsContext } from 'hooks/useWalletsActions'
+import { TransferPage } from 'pages/TransferPage'
 
 export function App() {
     const [key, setKey] = React.useState<string>()
-    const [coreDataIv, setCoreDataIv] = React.useState<CoreDataIV>()
-    const [coreData, setCoreData] = React.useState<CoreData>()
     const [toast, setToast] = React.useState<ToastModel>()
     const [actionMenu, setActionMenu] = React.useState<ActionMenuModel>()
     const navigate = useNavigate()
+
+    const [coreDataIv, setCoreDataIv] = React.useState<CoreDataIV>()
+    const [coreData, setCoreData] = React.useState<CoreData>()
+
+    const [balances, setBalances] = React.useState<WalletBalances>(new Map)
 
     const addWallet = React.useCallback((wallet: Wallet) => {
         if (!key) { return }
@@ -52,9 +58,9 @@ export function App() {
 
         setCoreData(newCoreData)
         saveCoreData(newCoreData, key, coreDataIv)
-        navigate(ROUTE_SUMMARY)
+        navigate(routeWallet(getWalletId(wallet)))
         setToast({
-            message: 'Wallet saved',
+            message: 'Wallet added',
         })
     }, [
         key,
@@ -117,39 +123,13 @@ export function App() {
 
         return (
             <Routes>
-                <Route index element={<Layout
-                    title="Summary"
-                >
-                    <Summary />
-                </Layout>} />
-
-                <Route path={ROUTE_SUMMARY} element={<Layout
-                    title="Summary"
-                >
-                    <Summary />
-                </Layout>} />
-
-                <Route path={ROUTE_CREATE_WALLET} element={<Layout
-                    title="Create new wallet"
-                >
-                    <CreateWalletWizard />
-                </Layout>} />
-
-                <Route path={ROUTE_IMPORT_WALLET} element={<Layout
-                    title="Import wallet"
-                >
-                    <ImportWalletWizard />
-                </Layout>} />
-
-                <Route path={ROUTE_WALLET_BY_ID} element={<Layout
-                    title="Wallet"
-                >
-                    <WalletSummary />
-                </Layout>} />
-
-                <Route path={ROUTE_ALL} element={<ErrorPage
-                    message="Unknown url"
-                />} />
+                <Route index element={<Layout title="Summary"><SummaryPage /></Layout>} />
+                <Route path={ROUTE_SUMMARY} element={<Layout title="Summary"><SummaryPage /></Layout>} />
+                <Route path={ROUTE_CREATE_WALLET} element={<Layout title="Create new wallet"><CreateWalletPage /></Layout>} />
+                <Route path={ROUTE_IMPORT_WALLET} element={<Layout title="Import wallet"><ImportWalletPage /></Layout>} />
+                <Route path={ROUTE_WALLET} element={<Layout title="Wallet"><WalletPage /></Layout>} />
+                <Route path={ROUTE_TRANSFER} element={<Layout title="Transfer"><TransferPage /></Layout>} />
+                <Route path={ROUTE_ALL} element={<ErrorPage message="Unknown url" />} />
             </Routes>
         )
     }

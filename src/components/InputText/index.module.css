@@ -5,6 +5,7 @@
     height: var(--input-height);
     min-width: calc(var(--input-height) * 2);
     line-height: var(--input-height);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .15);
 }
 
 .Icon {
@@ -40,7 +41,6 @@
     display: block;
     background: #fff;
     color: #000;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, .15);
     border: none;
     outline: none;
     appearance: none;
@@ -50,7 +50,7 @@
     height: 100%;
     padding: calc(var(--input-height) * .25);
     font-size: var(--input-font-size);
-    border-radius: var(--input-border-radius) var(--input-border-radius) 0 0;
+    border-radius: 3px 3px 0 0;
     text-overflow: ellipsis;
 }
 

@@ -6,7 +6,7 @@
     padding: 0 calc(var(--toast-height) * .5);
     height: var(--toast-height);
     line-height: var(--toast-height);
-    border-radius: var(--input-border-radius);
+    border-radius: 3px;
     background: #666;
     color: #fff;
     text-align: center;

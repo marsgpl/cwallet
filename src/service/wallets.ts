@@ -1,5 +1,5 @@
 import { ChainTicker, CHAIN_TICKER_ETH } from 'model/Chain'
-import { Wallet, WalletETH } from 'model/Wallet'
+import { Wallet, WalletETH, WalletId } from 'model/Wallet'
 import Web3 from 'web3'
 
 export function generateEthWallet(): WalletETH {
@@ -30,7 +30,7 @@ export function getWalletTitle({ title, address }: Wallet): string {
     return title || address
 }
 
-export function getWalletId({ ticker, address }: Wallet): string {
+export function getWalletId({ ticker, address }: Wallet): WalletId {
     return `${ticker}:${address}`
 }
 

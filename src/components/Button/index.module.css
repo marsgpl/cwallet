@@ -7,14 +7,11 @@
     outline: none;
     cursor: pointer;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
     -webkit-tap-highlight-color: transparent;
-    height: var(--input-height);
-    min-width: calc(var(--input-height) * 2);
-    line-height: var(--input-height);
-    padding: 0 calc(var(--input-height) * .5);
-    border-radius: var(--input-border-radius);
     font-size: var(--input-font-size);
+    border-radius: 3px;
 }
 
 .Root:active {
@@ -34,3 +31,26 @@
 
 .BgTrans { background: rgba(0, 0, 0, 0); color: #000; }
 .BgTrans:hover { background: rgba(0, 0, 0, .05); }
+
+.SizeS {
+    height: var(--input-height-s);
+    min-width: calc(var(--input-height-s) * 2);
+    line-height: var(--input-height-s);
+    padding: 0 calc(var(--input-height-s) * .5);
+    font-size: 13px;
+}
+
+.SizeM {
+    height: var(--input-height-m);
+    min-width: calc(var(--input-height-m) * 2);
+    line-height: var(--input-height-m);
+    padding: 0 calc(var(--input-height-m) * .5);
+    font-size: 15px;
+}
+
+.SizeL {
+    height: var(--input-height);
+    min-width: calc(var(--input-height) * 2);
+    line-height: var(--input-height);
+    padding: 0 calc(var(--input-height) * .5);
+}

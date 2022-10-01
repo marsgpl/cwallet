@@ -15,7 +15,9 @@
 .Content {
     width: 100%;
     max-width: var(--content-max-width);
-    padding: 10px 10px 20px 10px;
+    padding: 20px 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .Button + .Button {

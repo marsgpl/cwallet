@@ -1,15 +1,15 @@
 import React from 'react'
 import { ChainTicker } from 'model/Chain'
 import { Wallet } from 'model/Wallet'
-import { GenerateWalletStep } from 'wizards/steps/GenerateWalletStep'
-import { SelectChainStep } from 'wizards/steps/SelectChainStep'
-import { SetWalletTitleStep } from 'wizards/steps/SetWalletTitleStep'
-import s from './index.module.css'
+import { GenerateWalletStep } from 'steps/GenerateWalletStep'
+import { SelectChainStep } from 'steps/SelectChainStep'
+import { SetWalletTitleStep } from 'steps/SetWalletTitleStep'
 import { useWalletsActions } from 'hooks/useWalletsActions'
+import s from './index.module.css'
 
-export interface CreateWalletWizardProps {}
+export interface CreateWalletPageProps {}
 
-export function CreateWalletWizard({}: CreateWalletWizardProps) {
+export function CreateWalletPage({}: CreateWalletPageProps) {
     const { addWallet } = useWalletsActions()
 
     const [ticker, setTicker] = React.useState<ChainTicker>()

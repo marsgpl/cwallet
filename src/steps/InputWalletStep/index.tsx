@@ -4,8 +4,11 @@ import { Wallet } from 'model/Wallet'
 import { InputText } from 'components/InputText'
 import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
 import { Button } from 'components/Button'
-import { createWalletTemplate, getEthAddressFromPrivateKey } from 'service/wallets'
+import { createWalletTemplate, getEthAddressFromPrivateKey, getWalletById, getWalletId, isInvalidWallet } from 'service/wallets'
+import { useNavigate } from 'react-router-dom'
 import s from './index.module.css'
+import { ROUTE_SUMMARY } from 'defs/routes'
+import { useWallets } from 'hooks/useWallets'
 
 const enum IMPORT_TYPE {
     ADDRESS = 'address',
@@ -40,7 +43,9 @@ export function InputWalletStep({
     ticker,
     onSubmit,
 }: InputWalletStepProps) {
-    const [importType, setImportType] = React.useState<IMPORT_TYPE>()
+    const navigate = useNavigate()
+    const wallets = useWallets()
+    const [importType, setImportType] = React.useState<IMPORT_TYPE>(IMPORT_TYPE.PRIVATE_KEY)
     const [privateKey, setPrivateKey] = React.useState('')
     const [address, setAddress] = React.useState('')
 
@@ -63,9 +68,20 @@ export function InputWalletStep({
             }
         } else if (importType === IMPORT_TYPE.ADDRESS) {
             if (!address) { return }
+
             wallet.address = address
         } else {
             return
+        }
+
+        if (isInvalidWallet(wallet)) {
+            navigate(ROUTE_SUMMARY)
+            return window.alert('Wallet is invalid')
+        }
+
+        if (getWalletById(wallets, getWalletId(wallet))) {
+            navigate(ROUTE_SUMMARY)
+            return window.alert('Wallet is already added')
         }
 
         onSubmit({
@@ -83,7 +99,7 @@ export function InputWalletStep({
                 options={SELECT_IMPORT_TYPE_OPTIONS}
                 onChange={setImportType}
                 selectAttrs={{
-                    defaultValue: '',
+                    defaultValue: importType,
                     required: true,
                 }}
             />
