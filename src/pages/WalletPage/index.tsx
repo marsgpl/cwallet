@@ -6,8 +6,9 @@ import { useCopyValue } from 'hooks/useCopyValue'
 import { Button } from 'components/Button'
 import { routeTransfer } from 'defs/routes'
 import { useWallet } from 'hooks/useWalletById'
-import s from './index.module.css'
 import { useNav } from 'hooks/useNav'
+import { useWeb3 } from 'hooks/useWeb3'
+import s from './index.module.css'
 
 export interface WalletPageProps {
 }
@@ -19,16 +20,15 @@ export function WalletPage({}: WalletPageProps) {
     const { walletId } = useParams()
     const wallet = useWallet(walletId, wallets)
     const [balance, setBalance] = React.useState<number>()
+    const web3 = useWeb3()
 
     if (!walletId || !wallet) {
         throw Error('Wallet not found')
     }
 
     const fetchBalance = async () => {
-        const network = 'mainnet' // goerli, sepolia
-        const apiKey = '61954c3098b54990ad4fa0e7b1323daa' // https://infura.io/dashboard
-        const provider = new Web3.providers.HttpProvider(`https://${network}.infura.io/v3/${apiKey}`)
-        const web3 = new Web3(provider)
+        if (!web3) { return window.alert('Web3 is missing') }
+
         const defaultBlock = 'latest' // "earliest", "latest" , "pending", "safe", "finalized"
         const balanceWei = await web3.eth.getBalance(wallet.address, defaultBlock)
         const balanceEth = Web3.utils.fromWei(balanceWei, 'ether')

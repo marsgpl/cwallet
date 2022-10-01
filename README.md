@@ -39,3 +39,4 @@ npm run build
 - balances saving
 - global web3
 - state management maybe
+- validate eth provider web3 url

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChainTicker, CHAIN_TICKER_ETH } from 'model/Chain'
-import { useWalletsActions } from 'hooks/useWalletsActions'
+import { useAppActions } from 'hooks/useAppActions'
 import { useWallets } from 'hooks/useWallets'
 import { randomInteger } from 'lib/randomInteger'
 import { WALLET_TITLES } from 'defs/words'
@@ -18,7 +18,7 @@ export interface CreateWalletPageProps {}
 export function CreateWalletPage({}: CreateWalletPageProps) {
     const copyValue = useCopyValue()
     const wallets = useWallets()
-    const { addWallet } = useWalletsActions()
+    const { addWallet } = useAppActions()
     const [title, setTitle] = React.useState('')
     const [titleIndex, setTitleIndex] = React.useState(randomInteger(0, WALLET_TITLES.length - 1))
     const [ticker, setTicker] = React.useState<ChainTicker>(CHAIN_TICKER_ETH)

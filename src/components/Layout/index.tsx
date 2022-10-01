@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { getInvalidWallets, getWalletTitle } from 'service/wallets'
 import { useWallets } from 'hooks/useWallets'
 import { ActionMenuButtons } from 'model/ActionMenu'
-import { useWalletsActions } from 'hooks/useWalletsActions'
+import { useAppActions } from 'hooks/useAppActions'
 import { useWallet } from 'hooks/useWalletById'
 import { cn } from 'lib/cn'
 import { useNav } from 'hooks/useNav'
@@ -34,7 +34,7 @@ export function Layout({
     const { walletId } = useParams()
     const wallets = useWallets()
     const wallet = useWallet(walletId, wallets)
-    const { deleteWallets, updateWallet } = useWalletsActions()
+    const { deleteWallets, updateWallet } = useAppActions()
     const invalidWallets = React.useMemo(() => wallets && getInvalidWallets(wallets) || [], [wallets])
     const hasInvalidWallets = Boolean(invalidWallets.length)
     const needPin = hasInvalidWallets

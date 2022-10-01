@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavigateOptions, Route, Routes, To, useNavigate } from 'react-router-dom'
-import { CoreData, CoreDataIV } from 'model/CoreData'
+import { CoreData, CoreDataIV, CoreDataProviders } from 'model/CoreData'
 import { loadCoreData, getCoreDataIv, saveCoreData } from 'service/coreData'
 import { RequestKeyPage } from 'pages/RequestKeyPage'
 import { LoadingPage } from 'pages/LoadingPage'
@@ -29,9 +29,10 @@ import { WalletsContext } from 'hooks/useWallets'
 import { Wallet, WalletBalances } from 'model/Wallet'
 import { WalletPage } from 'pages/WalletPage'
 import { equalWallets, getWalletId } from 'service/wallets'
-import { WalletsActionsContext } from 'hooks/useWalletsActions'
+import { AppActionsContext } from 'hooks/useAppActions'
 import { TransferPage } from 'pages/TransferPage'
 import { NavContext } from 'hooks/useNav'
+import { ProvidersContext } from 'hooks/useProviders'
 
 export function App() {
     const [key, setKey] = React.useState<string>()
@@ -40,8 +41,25 @@ export function App() {
     const [mobMenuShown, setMobMenuShown] = React.useState(false)
     const [coreDataIv, setCoreDataIv] = React.useState<CoreDataIV>()
     const [coreData, setCoreData] = React.useState<CoreData>()
-    const [balances, setBalances] = React.useState<WalletBalances>(new Map)
+    const [balances, setBalances] = React.useState<WalletBalances>()
     const navigate = useNavigate()
+
+    React.useEffect(() => {
+        if (!key) { return }
+
+        try {
+            const iv = getCoreDataIv()
+            const data = loadCoreData(key, iv)
+
+            setCoreDataIv(iv)
+            setCoreData(data)
+        } catch (error) {
+            console.error('🔺 error:', error)
+            throw Error('Decoding failed', {
+                cause: Error(stringifyError(error)),
+            })
+        }
+    }, [key])
 
     const goTo = React.useCallback((to: To, options?: NavigateOptions) => {
         navigate(to, options)
@@ -52,9 +70,7 @@ export function App() {
     ])
 
     const updateWallet = React.useCallback((wallet: Wallet) => {
-        if (!key) { return }
-        if (!coreDataIv) { return }
-        if (!coreData) { return }
+        if (!key || !coreData || !coreDataIv) { return }
 
         const newCoreData = {
             ...coreData,
@@ -73,9 +89,7 @@ export function App() {
     ])
 
     const addWallet = React.useCallback((wallet: Wallet) => {
-        if (!key) { return }
-        if (!coreDataIv) { return }
-        if (!coreData) { return }
+        if (!key || !coreData || !coreDataIv) { return }
 
         const newCoreData = {
             ...coreData,
@@ -98,9 +112,7 @@ export function App() {
     ])
 
     const deleteWallets = React.useCallback((walletsToDelete: Wallet[]) => {
-        if (!key) { return }
-        if (!coreDataIv) { return }
-        if (!coreData) { return }
+        if (!key || !coreData || !coreDataIv) { return }
 
         const message = `Are you sure want to delete ${walletsToDelete.length} wallet${walletsToDelete.length === 1 ? '' : 's'}?${walletsToDelete.map(wallet => `\n\n${JSON.stringify(wallet)}`)}`
 
@@ -125,21 +137,27 @@ export function App() {
         coreData,
     ])
 
-    React.useEffect(() => {
-        if (!key) { return }
+    const updateProvider = React.useCallback((k: keyof CoreDataProviders, v: string) => {
+        if (!key || !coreData || !coreDataIv) { return }
 
-        try {
-            const iv = getCoreDataIv()
-            const data = loadCoreData(key, iv)
-
-            setCoreDataIv(iv)
-            setCoreData(data)
-        } catch (error) {
-            throw Error('Decoding failed', {
-                cause: Error(stringifyError(error)),
-            })
+        const newCoreData = {
+            ...coreData,
+            providers: {
+                ...coreData.providers,
+                [k]: v,
+            },
         }
-    }, [key])
+
+        setCoreData(newCoreData)
+        saveCoreData(newCoreData, key, coreDataIv)
+        setToast({
+            message: `${k} updated`,
+        })
+    }, [
+        key,
+        coreDataIv,
+        coreData,
+    ])
 
     const renderContent = () => {
         if (!key) {
@@ -169,12 +187,14 @@ export function App() {
             setMobMenuShown,
             goTo,
         }}>
-        <WalletsActionsContext.Provider value={{
+        <AppActionsContext.Provider value={{
             addWallet,
             deleteWallets,
             updateWallet,
+            updateProvider,
         }}>
         <WalletsContext.Provider value={coreData?.wallets}>
+        <ProvidersContext.Provider value={coreData?.providers || {}}>
         <SetToastContext.Provider value={setToast}>
         <SetActionMenuContext.Provider value={setActionMenu}>
             {renderContent()}
@@ -182,8 +202,9 @@ export function App() {
             {actionMenu ? <ActionMenu data={actionMenu} /> : null}
         </SetActionMenuContext.Provider>
         </SetToastContext.Provider>
+        </ProvidersContext.Provider>
         </WalletsContext.Provider>
-        </WalletsActionsContext.Provider>
+        </AppActionsContext.Provider>
         </NavContext.Provider>
     )
 }

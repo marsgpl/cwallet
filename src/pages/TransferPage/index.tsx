@@ -6,8 +6,9 @@ import { useParams } from 'react-router-dom'
 import { InputText } from 'components/InputText'
 import { Button } from 'components/Button'
 import { TransactionConfig } from 'web3-core/types'
-import s from './index.module.css'
 import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
+import { useWeb3 } from 'hooks/useWeb3'
+import s from './index.module.css'
 
 const enum TRANSFER_TYPE {
     COIN = 'coin',
@@ -42,6 +43,7 @@ export function TransferPage({}: TransferPageProps) {
     const [rawTx, setRawTx] = React.useState<any>()
     const [txFee, setTxFee] = React.useState<string>()
     const [gasToUse, setGasToUse] = React.useState<string>()
+    const web3 = useWeb3()
 
     if (!walletId || !wallet) {
         throw Error('Wallet not found')
@@ -49,14 +51,8 @@ export function TransferPage({}: TransferPageProps) {
 
     const submitForSend = async () => {
         try {
-            if (!rawTx) {
-                throw Error('no tx')
-            }
-
-            const network = 'mainnet' // goerli, sepolia
-            const apiKey = '61954c3098b54990ad4fa0e7b1323daa' // https://infura.io/dashboard
-            const provider = new Web3.providers.HttpProvider(`https://${network}.infura.io/v3/${apiKey}`)
-            const web3 = new Web3(provider)
+            if (!web3) { throw Error('Web3 is missing') }
+            if (!rawTx) { throw Error('rawTx is missing') }
 
             const signed = await web3.eth.accounts.signTransaction(rawTx, wallet.privateKey)
 
@@ -80,13 +76,10 @@ export function TransferPage({}: TransferPageProps) {
     const submitForPreview = async (event: React.FormEvent) => {
         event.preventDefault()
 
-        const network = 'mainnet' // goerli, sepolia
-        const apiKey = '61954c3098b54990ad4fa0e7b1323daa' // https://infura.io/dashboard
-        const provider = new Web3.providers.HttpProvider(`https://${network}.infura.io/v3/${apiKey}`)
-        const web3 = new Web3(provider)
-
         if (transferType === TRANSFER_TYPE.COIN) {
             try {
+                if (!web3) { throw Error('Web3 is missing') }
+
                 const [
                     chainId,
                     txCount,
@@ -132,6 +125,8 @@ export function TransferPage({}: TransferPageProps) {
             }
         } else if (transferType === TRANSFER_TYPE.TOKEN_USDT) {
             try {
+                if (!web3) { throw Error('Web3 is missing') }
+
                 const [
                     chainId,
                     txCount,

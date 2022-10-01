@@ -16,6 +16,7 @@ export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
     if (encrypted === null) {
         return {
             wallets: [],
+            providers: {},
         }
     }
 
@@ -28,6 +29,14 @@ export function loadCoreData(key: string, iv: CoreDataIV): CoreData {
     }
 
     const coreData = parsed as CoreData
+
+    if (!coreData.wallets) {
+        coreData.wallets = []
+    }
+
+    if (!coreData.providers) {
+        coreData.providers = {}
+    }
 
     fixCoreData(coreData)
 
