@@ -33,7 +33,7 @@ export function Layout({
     const { walletId } = useParams()
     const wallets = useWallets()
     const wallet = useWallet(walletId, wallets)
-    const { deleteWallets } = useWalletsActions()
+    const { deleteWallets, updateWallet } = useWalletsActions()
     const [menuShown, setMenuShown] = React.useState(false)
     const invalidWallets = React.useMemo(() => wallets && getInvalidWallets(wallets) || [], [wallets])
     const hasInvalidWallets = Boolean(invalidWallets.length)
@@ -44,6 +44,19 @@ export function Layout({
 
         setActionMenu({
             buttons: [
+                {
+                    text: 'Rename',
+                    onClick: () => {
+                        const title = prompt('New name:')
+
+                        if (title === null) { return }
+
+                        updateWallet({
+                            ...wallet,
+                            title,
+                        })
+                    },
+                },
                 {
                     text: 'Delete',
                     textColor: 'red',

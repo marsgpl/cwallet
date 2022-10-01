@@ -28,7 +28,7 @@ import { ImportWalletPage } from 'pages/ImportWalletPage'
 import { WalletsContext } from 'hooks/useWallets'
 import { Wallet, WalletBalances } from 'model/Wallet'
 import { WalletPage } from 'pages/WalletPage'
-import { getWalletId } from 'service/wallets'
+import { equalWallets, getWalletId } from 'service/wallets'
 import { WalletsActionsContext } from 'hooks/useWalletsActions'
 import { TransferPage } from 'pages/TransferPage'
 
@@ -42,6 +42,27 @@ export function App() {
     const [coreData, setCoreData] = React.useState<CoreData>()
 
     const [balances, setBalances] = React.useState<WalletBalances>(new Map)
+
+    const updateWallet = React.useCallback((wallet: Wallet) => {
+        if (!key) { return }
+        if (!coreDataIv) { return }
+        if (!coreData) { return }
+
+        const newCoreData = {
+            ...coreData,
+            wallets: coreData.wallets.map(w => equalWallets(w, wallet) ? wallet : w),
+        }
+
+        setCoreData(newCoreData)
+        saveCoreData(newCoreData, key, coreDataIv)
+        setToast({
+            message: 'Wallet updated',
+        })
+    }, [
+        key,
+        coreDataIv,
+        coreData,
+    ])
 
     const addWallet = React.useCallback((wallet: Wallet) => {
         if (!key) { return }
@@ -138,6 +159,7 @@ export function App() {
         <WalletsActionsContext.Provider value={{
             addWallet,
             deleteWallets,
+            updateWallet,
         }}>
             <WalletsContext.Provider value={coreData?.wallets}>
                 <SetToastContext.Provider value={setToast}>
