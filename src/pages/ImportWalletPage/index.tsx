@@ -28,7 +28,7 @@ const SELECT_IMPORT_TYPE_OPTIONS: SelectOptions = [
         title: 'Import type',
     },
     {
-        title: 'Private key (you owe funds)',
+        title: 'Private key',
         value: IMPORT_TYPE.PRIVATE_KEY,
     },
     {

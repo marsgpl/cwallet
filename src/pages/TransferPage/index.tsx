@@ -10,6 +10,7 @@ import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
 import { useWeb3 } from 'hooks/useWeb3'
 import s from './index.module.css'
 import { ETH_USDT_ABI, ETH_USDT_CONTRACT_ADDR, ETH_USDT_MULTIPLIER } from 'defs/eth'
+import { Loader } from 'components/Loader'
 
 const enum TRANSFER_TYPE {
     COIN = 'coin',
@@ -45,6 +46,7 @@ export function TransferPage({}: TransferPageProps) {
     const [txFee, setTxFee] = React.useState<string>()
     const [gasToUse, setGasToUse] = React.useState<string>()
     const web3 = useWeb3()
+    const [sending, setSending] = React.useState(false)
 
     if (!walletId || !wallet) {
         throw Error('Wallet not found')
@@ -63,12 +65,11 @@ export function TransferPage({}: TransferPageProps) {
                 throw Error('signing failed')
             }
 
-            web3.eth.sendSignedTransaction(signed.rawTransaction).then(receipt => {
-                console.log('🔸 receipt:', receipt)
-                window.alert('done. hash: ' + receipt.transactionHash)
-            })
-
-            window.alert('tx sent')
+            setSending(true)
+            const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+            setSending(false)
+            console.log('🔸 receipt:', receipt)
+            window.alert('done. hash: ' + receipt.transactionHash)
         } catch (error) {
             console.error('🔺 error:', error)
             window.alert('Error:\n' + (error as any).message)
@@ -252,6 +253,15 @@ export function TransferPage({}: TransferPageProps) {
                 text="Preview"
                 className={s.Input}
             />
+
+            {sending && <>
+                <div style={{marginTop:'20px'}}>
+                    <Loader />
+                </div>
+                <div style={{marginTop:'20px'}}>
+                    TX was sent, wait for completion
+                </div>
+            </>}
         </form>
     )
 
