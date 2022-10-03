@@ -21,4 +21,5 @@ export interface WalletBalance {
     value: string
 }
 
+// ticker:chainId:addr => { ts, value }
 export type WalletBalances = Map<string, WalletBalance>

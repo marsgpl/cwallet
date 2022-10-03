@@ -9,6 +9,7 @@ import { useWallet } from 'hooks/useWalletById'
 import { useNav } from 'hooks/useNav'
 import { useWeb3 } from 'hooks/useWeb3'
 import s from './index.module.css'
+import { ETH_USDT_ABI, ETH_USDT_CONTRACT_ADDR, ETH_USDT_MULTIPLIER } from 'defs/eth'
 
 export interface WalletPageProps {
 }
@@ -19,8 +20,9 @@ export function WalletPage({}: WalletPageProps) {
     const wallets = useWallets()
     const { walletId } = useParams()
     const wallet = useWallet(walletId, wallets)
-    const [balance, setBalance] = React.useState<number>()
+    const [balance, setBalance] = React.useState<Record<string, Record<string, number>>>({})
     const web3 = useWeb3()
+    const walletBalance = walletId ? balance[walletId] : undefined
 
     if (!walletId || !wallet) {
         throw Error('Wallet not found')
@@ -32,7 +34,18 @@ export function WalletPage({}: WalletPageProps) {
         const defaultBlock = 'latest' // "earliest", "latest" , "pending", "safe", "finalized"
         const balanceWei = await web3.eth.getBalance(wallet.address, defaultBlock)
         const balanceEth = Web3.utils.fromWei(balanceWei, 'ether')
-        setBalance(parseFloat(balanceEth))
+
+        const contract = new web3.eth.Contract(ETH_USDT_ABI as any, ETH_USDT_CONTRACT_ADDR)
+        const usdtBalance = await contract.methods.balanceOf(wallet.address).call()
+
+        setBalance({
+            ...balance,
+            [walletId]: {
+                ...balance[walletId],
+                ETH: parseFloat(balanceEth),
+                USDT: parseFloat(usdtBalance) / ETH_USDT_MULTIPLIER,
+            }
+        })
     }
 
     return (
@@ -46,7 +59,11 @@ export function WalletPage({}: WalletPageProps) {
 
             address:
             &nbsp;
-            <b onClick={() => copyValue(wallet.address, 'Address copied')}>copy</b>
+            <Button
+                text="Copy"
+                size="s"
+                onClick={() => copyValue(wallet.address, 'Address copied')}
+            />
 
             <br />
 
@@ -60,7 +77,11 @@ export function WalletPage({}: WalletPageProps) {
 
                 private key:
                 &nbsp;
-                <b onClick={() => copyValue(wallet.privateKey, 'Private key copied')}>copy</b>
+                <Button
+                    text="Copy"
+                    size="s"
+                    onClick={() => copyValue(wallet.privateKey, 'Private key copied')}
+                />
             </>}
 
             <br />
@@ -68,10 +89,13 @@ export function WalletPage({}: WalletPageProps) {
 
             balance:
             &nbsp;
-            {balance === undefined ? '' : <b>{balance} ETH</b>}
-            &nbsp;
-            &nbsp;
-            <Button text="fetch" onClick={fetchBalance} size="s" />
+            {walletBalance === undefined ? '' : <div>
+                {Object.entries(walletBalance).reduce<JSX.Element[]>((acc, [k, v]) => {
+                    acc.push(<div>{v} <b>{k}</b></div>)
+                    return acc
+                }, [])}
+            </div>}
+            <Button text="Fetch" onClick={fetchBalance} size="s" />
 
             {wallet.privateKey && <>
                 <br />

@@ -3,7 +3,7 @@
 }
 
 .RootLoader {
-    padding: 20px;
+    padding: 30px;
 }
 
 .Row {
@@ -11,13 +11,81 @@
     display: flex;
 }
 
-.Value {
+.RowValue {
     font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.Key + .Value {
+.RowKey + .RowValue {
     margin-left: 8px;
+}
+
+.Providers {
+    padding: 8px 10px;
+}
+
+.Provider {
+    margin: 15px 10px 10px 15px;
+}
+
+.ProvidersTitle {
+    font-weight: 500;
+}
+
+.ProviderTitle {
+    font-weight: 500;
+}
+
+.ProviderDescr + .ProviderDescr,
+.ProviderTitle + .ProviderDescr {
+    margin-top: 10px;
+}
+
+.ProviderDescr {
+    margin-left: 15px;
+    color: #666;
+    word-break: break-word;
+}
+
+.ProviderInput {
+    margin-top: 20px;
+    max-width: var(--content-max-width);
+}
+
+.ProviderDescr ul,
+.ProviderDescr ol {
+    padding: 0;
+    margin: 0 0 0 30px;
+}
+
+.ProviderDescr a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.ProviderDescr a:hover {
+    text-decoration: underline;
+}
+
+.ProviderDescr a:active {
+    color: var(--color-primary-hover);
+}
+
+.ProviderButtons {
+    margin-top: 10px;
+    display: flex;
+    max-width: var(--content-max-width);
+}
+
+.ProviderButtonsButton {
+    flex-shrink: 0;
+}
+
+.ProviderButtonsStatus {
+    flex-grow: 1;
+    height: var(--input-height);
+    line-height: var(--input-height);
+    padding: 0 20px;
 }

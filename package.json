@@ -1,7 +1,7 @@
 {
   "name": "@marsgpl/cwallet",
   "description": "Non-custodial crypto wallet",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "license": "MIT",
   "author": "marsgpl",
   "repository": {
