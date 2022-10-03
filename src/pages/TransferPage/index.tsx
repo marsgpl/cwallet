@@ -67,12 +67,19 @@ export function TransferPage({}: TransferPageProps) {
 
             setSending(true)
             const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+
             setSending(false)
+            setRawTx(undefined)
+            setTxFee(undefined)
+
             console.log('🔸 receipt:', receipt)
             window.alert('done. hash: ' + receipt.transactionHash)
         } catch (error) {
             console.error('🔺 error:', error)
             window.alert('Error:\n' + (error as any).message)
+            setSending(false)
+            setRawTx(undefined)
+            setTxFee(undefined)
         }
     }
 
