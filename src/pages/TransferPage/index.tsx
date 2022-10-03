@@ -63,11 +63,12 @@ export function TransferPage({}: TransferPageProps) {
                 throw Error('signing failed')
             }
 
-            const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
+            web3.eth.sendSignedTransaction(signed.rawTransaction).then(receipt => {
+                console.log('🔸 receipt:', receipt)
+                window.alert('done. hash: ' + receipt.transactionHash)
+            })
 
-            console.log('🔸 receipt:', receipt)
-
-            window.alert('done. hash: ' + receipt.transactionHash)
+            window.alert('tx sent')
         } catch (error) {
             console.error('🔺 error:', error)
             window.alert('Error:\n' + (error as any).message)
@@ -164,9 +165,6 @@ export function TransferPage({}: TransferPageProps) {
 
                 const feeWei = BigInt(gasRequired) * BigInt(gasPrice)
 
-                const balance = await contract.methods.balanceOf(wallet.address).call()
-
-                console.log('🔸 balance:', balance)
                 console.log('🔸 contract:', contract)
                 console.log('🔸 tx:', tx)
                 console.log('🔸 feeWei:', feeWei)
@@ -272,7 +270,7 @@ export function TransferPage({}: TransferPageProps) {
         <br />
 
         <Button
-            text="Confirm and send"
+            text="Sign and send"
             className={s.Input}
             onClick={submitForSend}
         />
