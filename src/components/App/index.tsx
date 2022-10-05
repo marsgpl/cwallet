@@ -26,23 +26,24 @@ import { SummaryPage } from 'pages/SummaryPage'
 import { CreateWalletPage } from 'pages/CreateWalletPage'
 import { ImportWalletPage } from 'pages/ImportWalletPage'
 import { WalletsContext } from 'hooks/useWallets'
-import { Wallet, WalletBalances } from 'model/Wallet'
+import { Wallet } from 'model/Wallet'
 import { WalletPage } from 'pages/WalletPage'
 import { equalWallets, getWalletId } from 'service/wallets'
 import { AppActionsContext } from 'hooks/useAppActions'
 import { TransferPage } from 'pages/TransferPage'
 import { NavContext } from 'hooks/useNav'
 import { ProvidersContext } from 'hooks/useProviders'
+// import { Balances } from 'model/Balances'
 
 export function App() {
+    const navigate = useNavigate()
     const [key, setKey] = React.useState<string>()
     const [toast, setToast] = React.useState<ToastModel>()
     const [actionMenu, setActionMenu] = React.useState<ActionMenuModel>()
     const [mobMenuShown, setMobMenuShown] = React.useState(false)
     const [coreDataIv, setCoreDataIv] = React.useState<CoreDataIV>()
     const [coreData, setCoreData] = React.useState<CoreData>()
-    const [balances, setBalances] = React.useState<WalletBalances>()
-    const navigate = useNavigate()
+    // const [balances, setBalances] = React.useState<Balances>({})
 
     React.useEffect(() => {
         if (!key) { return }

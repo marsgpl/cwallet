@@ -3,6 +3,12 @@ import { Wallet } from './Wallet'
 
 export interface CoreDataProviders {
     web3?: string
+    tron?: {
+        apiKey: string
+        fullNode: string
+        solidityNode: string
+        eventServer: string
+    }
 }
 
 export interface CoreData {

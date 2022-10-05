@@ -1,29 +1,13 @@
-import { ChainTicker, CHAIN_TICKER_ETH } from 'model/Chain'
-import { Wallet, WalletETH, WalletId } from 'model/Wallet'
-import Web3 from 'web3'
+import { ChainTicker } from 'model/Chain'
+import { Wallet, WalletId } from 'model/Wallet'
+import { createEthWallet, getEthAddressFromPrivateKey, isEthTicker, isEthWallet, isInvalidEthWallet } from './eth'
+import { createTrxWallet, getTrxAddressFromPrivateKey, isInvalidTrxWallet, isTrxTicker, isTrxWallet } from './trx'
 
-export function generateEthWallet(): WalletETH {
-    const account = (new Web3).eth.accounts.create()
-    const wallet = createWalletTemplate(CHAIN_TICKER_ETH)
-
-    wallet.privateKey = account.privateKey
-    wallet.address = account.address
-
-    return wallet
-}
-
-export function getEthAddressFromPrivateKey(privateKey: string): string {
-    const account = (new Web3).eth.accounts.privateKeyToAccount(privateKey)
-    return account.address
-}
-
-export function createWalletTemplate(ticker: ChainTicker): Wallet {
-    return {
-        title: undefined,
-        ticker,
-        privateKey: '',
-        address: '',
-    }
+export interface ImportWalletProps {
+    ticker?: ChainTicker
+    title?: string
+    privateKey?: string
+    address?: string
 }
 
 export function getWalletTitle({ title, address }: Wallet): string {
@@ -73,9 +57,44 @@ export function equalWallets(w1?: Wallet, w2?: Wallet): boolean {
 }
 
 export function isInvalidWallet(wallet: Wallet): boolean {
-    return !Web3.utils.isAddress(wallet.address)
+    if (isEthWallet(wallet) && isInvalidEthWallet(wallet)) {
+        return true
+    }
+
+    if (isTrxWallet(wallet) && isInvalidTrxWallet(wallet)) {
+        return true
+    }
+
+    return !wallet.address
 }
 
 export function getInvalidWallets(wallets: Wallet[]): Wallet[] {
     return wallets.filter(isInvalidWallet)
+}
+
+export function importWallet({
+    ticker,
+    title,
+    privateKey,
+    address,
+}: ImportWalletProps): Wallet {
+    if (!address && !privateKey) { throw Error('Not enough data') }
+
+    if (isEthTicker(ticker)) {
+        return createEthWallet({
+            title,
+            privateKey,
+            address: address || privateKey && getEthAddressFromPrivateKey(privateKey),
+        })
+    }
+
+    if (isTrxTicker(ticker)) {
+        return createTrxWallet({
+            title,
+            privateKey,
+            address: address || privateKey && getTrxAddressFromPrivateKey(privateKey),
+        })
+    }
+
+    throw Error('Unknown ticker')
 }

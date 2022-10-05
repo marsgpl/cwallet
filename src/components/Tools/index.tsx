@@ -46,8 +46,7 @@ export function Tools({
                 message: IMPORT_OK,
             })
         } catch (error) {
-            console.error('🔺', error)
-
+            console.error('🔺 error:', error)
             setToast({
                 message: IMPORT_FAILED,
             })
@@ -68,8 +67,7 @@ export function Tools({
                 message: IMPORT_OK,
             })
         } catch (error) {
-            console.error('🔺', error)
-
+            console.error('🔺 error:', error)
             setToast({
                 message: IMPORT_FAILED,
             })

@@ -18,6 +18,7 @@ export type IconId =
     | 'wand'
     | 'down'
     | 'eth'
+    | 'trx'
 
 export interface IconProps {
     id: IconId
@@ -42,6 +43,7 @@ function getIconClass(id: IconId): string {
         case 'wand': return s.wand
         case 'down': return s.down
         case 'eth': return s.eth
+        case 'trx': return s.trx
     }
 }
 

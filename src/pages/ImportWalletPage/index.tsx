@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChainTicker, CHAIN_TICKER_ETH } from 'model/Chain'
+import { ChainTicker } from 'model/Chain'
 import { useAppActions } from 'hooks/useAppActions'
 import { randomInteger } from 'lib/randomInteger'
 import { WALLET_TITLES } from 'defs/words'
@@ -8,14 +8,15 @@ import { Button } from 'components/Button'
 import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
 import { selectChainOptions } from 'service/chains'
 import {
-    createWalletTemplate,
-    getEthAddressFromPrivateKey,
     getWalletById,
     getWalletId,
+    importWallet,
     isInvalidWallet,
 } from 'service/wallets'
 import { useWallets } from 'hooks/useWallets'
 import s from './index.module.css'
+import { stringifyError } from 'lib/stringifyError'
+import { DEFAULT_ERROR_MESSAGE } from 'defs/messages'
 
 const enum IMPORT_TYPE {
     ADDRESS = 'address',
@@ -45,41 +46,34 @@ export function ImportWalletPage({}: ImportWalletPageProps) {
     const [title, setTitle] = React.useState('')
     const [titleIndex, setTitleIndex] = React.useState(randomInteger(0, WALLET_TITLES.length - 1))
     const [importType, setImportType] = React.useState<IMPORT_TYPE>()
-    const [ticker, setTicker] = React.useState<ChainTicker>(CHAIN_TICKER_ETH)
+    const [ticker, setTicker] = React.useState<ChainTicker>()
     const [privateKey, setPrivateKey] = React.useState('')
     const [address, setAddress] = React.useState('')
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault()
 
-        if (ticker !== CHAIN_TICKER_ETH) { return }
+        try {
+            const wallet = importWallet({
+                ticker,
+                title,
+                privateKey,
+                address,
+            })
 
-        const wallet = createWalletTemplate(ticker)
-
-        wallet.title = title
-
-        if (importType === IMPORT_TYPE.PRIVATE_KEY) {
-            try {
-                wallet.privateKey = privateKey
-                wallet.address = getEthAddressFromPrivateKey(privateKey)
-            } catch (error) {
-                return window.alert('Something went wrong\n' + error)
+            if (isInvalidWallet(wallet)) {
+                throw Error('Invalid wallet')
             }
-        } else if (importType === IMPORT_TYPE.ADDRESS) {
-            wallet.address = address
-        } else {
-            return window.alert('Unknown import type')
-        }
 
-        if (isInvalidWallet(wallet)) {
-            return window.alert('Wallet is invalid')
-        }
+            if (getWalletById(wallets, getWalletId(wallet))) {
+                throw Error('Wallet is already added')
+            }
 
-        if (getWalletById(wallets, getWalletId(wallet))) {
-            return window.alert('Wallet is already added')
+            addWallet(wallet)
+        } catch (error) {
+            console.error('🔺 error:', error)
+            window.alert(DEFAULT_ERROR_MESSAGE + '\n' + stringifyError(error))
         }
-
-        addWallet(wallet)
     }
 
     return (
@@ -103,7 +97,7 @@ export function ImportWalletPage({}: ImportWalletPageProps) {
                 options={selectChainOptions()}
                 onChange={setTicker}
                 selectAttrs={{
-                    defaultValue: ticker,
+                    defaultValue: '',
                     required: true,
                 }}
             />

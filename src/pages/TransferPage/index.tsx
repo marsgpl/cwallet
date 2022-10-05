@@ -9,8 +9,11 @@ import { TransactionConfig } from 'web3-core/types'
 import { EMPTY_OPTION, Select, SelectOptions } from 'components/Select'
 import { useWeb3 } from 'hooks/useWeb3'
 import s from './index.module.css'
-import { ETH_USDT_ABI, ETH_USDT_CONTRACT_ADDR, ETH_USDT_MULTIPLIER } from 'defs/eth'
+import { ETH_USDT_ABI, ETH_USDT_CONTRACT_ADDRESS } from 'defs/eth'
 import { Loader } from 'components/Loader'
+import { ERROR_NO_WEB3 } from 'service/wallets/eth'
+import { DEFAULT_ERROR_MESSAGE } from 'defs/messages'
+import { stringifyError } from 'lib/stringifyError'
 
 const enum TRANSFER_TYPE {
     COIN = 'coin',
@@ -54,8 +57,9 @@ export function TransferPage({}: TransferPageProps) {
 
     const submitForSend = async () => {
         try {
-            if (!web3) { throw Error('Web3 is missing') }
+            if (!web3) { throw Error(ERROR_NO_WEB3) }
             if (!rawTx) { throw Error('rawTx is missing') }
+            if (!wallet.privateKey) { throw Error('wallet has no private key') }
 
             const signed = await web3.eth.accounts.signTransaction(rawTx, wallet.privateKey)
 
@@ -75,11 +79,12 @@ export function TransferPage({}: TransferPageProps) {
             console.log('🔸 receipt:', receipt)
             window.alert('done. hash: ' + receipt.transactionHash)
         } catch (error) {
-            console.error('🔺 error:', error)
-            window.alert('Error:\n' + (error as any).message)
             setSending(false)
             setRawTx(undefined)
             setTxFee(undefined)
+
+            console.error('🔺 error:', error)
+            window.alert(DEFAULT_ERROR_MESSAGE + '\n' + stringifyError(error))
         }
     }
 
@@ -88,7 +93,7 @@ export function TransferPage({}: TransferPageProps) {
 
         if (transferType === TRANSFER_TYPE.COIN) {
             try {
-                if (!web3) { throw Error('Web3 is missing') }
+                if (!web3) { throw Error(ERROR_NO_WEB3) }
 
                 const [
                     chainId,
@@ -131,11 +136,11 @@ export function TransferPage({}: TransferPageProps) {
                 setTxFee(feeWei.toString())
             } catch (error) {
                 console.error('🔺 error:', error)
-                window.alert('Error:\n' + (error as any).message)
+                window.alert(DEFAULT_ERROR_MESSAGE + '\n' + stringifyError(error))
             }
         } else if (transferType === TRANSFER_TYPE.TOKEN_USDT) {
             try {
-                if (!web3) { throw Error('Web3 is missing') }
+                if (!web3) { throw Error(ERROR_NO_WEB3) }
 
                 const [
                     chainId,
@@ -154,7 +159,7 @@ export function TransferPage({}: TransferPageProps) {
                 console.log('🔸 gasPrice:', gasPrice, typeof gasPrice)
                 console.log('🔸 gasRequired:', gasRequired, typeof gasRequired)
 
-                const contract = new web3.eth.Contract(ETH_USDT_ABI as any, ETH_USDT_CONTRACT_ADDR, {
+                const contract = new web3.eth.Contract(ETH_USDT_ABI as any, ETH_USDT_CONTRACT_ADDRESS, {
                     from: wallet.address,
                     gasPrice,
                     gas: gasRequired,
@@ -162,11 +167,11 @@ export function TransferPage({}: TransferPageProps) {
 
                 const tx: TransactionConfig = {
                     from: wallet.address,
-                    to: ETH_USDT_CONTRACT_ADDR,
+                    to: ETH_USDT_CONTRACT_ADDRESS,
                     value: 0x0,
                     gas: gasRequired,
                     gasPrice: Web3.utils.toHex(gasPrice),
-                    data: contract.methods.transfer(toAddress, Math.ceil(parseFloat(amountToSend) * ETH_USDT_MULTIPLIER)).encodeABI(),
+                    data: contract.methods.transfer(toAddress, Math.ceil(parseFloat(amountToSend) * 1000000)).encodeABI(),
                     nonce: txCount,
                     chainId,
                 }
@@ -182,7 +187,7 @@ export function TransferPage({}: TransferPageProps) {
                 setTxFee(feeWei.toString())
             } catch (error) {
                 console.error('🔺 error:', error)
-                window.alert('Error:\n' + (error as any).message)
+                window.alert(DEFAULT_ERROR_MESSAGE + '\n' + stringifyError(error))
             }
         } else {
             window.alert('Error: transfer type not implemented')
@@ -280,7 +285,7 @@ export function TransferPage({}: TransferPageProps) {
         <br />
 
         fee:
-        &nbsp;
+        {' '}
         <b>{Web3.utils.fromWei(txFee || '0', 'ether')} ETH</b>
 
         <br />

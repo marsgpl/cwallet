@@ -12,8 +12,7 @@ export function useCopyValue() {
         copy(value).then(() => {
             setToast({ message })
         }).catch(error => {
-            console.error('🔺', error)
-
+            console.error('🔺 error:', error)
             setToast({
                 message: DEFAULT_ERROR_MESSAGE,
             })

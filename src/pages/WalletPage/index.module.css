@@ -1,3 +1,17 @@
 .Root {
     padding: 20px;
+    line-height: 28px;
+}
+
+.PadTop {
+    margin-top: 24px;
+}
+
+.PadTopSm {
+    margin-top: 10px;
+}
+
+.BalanceLoader {
+    display: inline-block;
+    margin-left: 10px;
 }

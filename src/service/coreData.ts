@@ -2,8 +2,7 @@ import CryptoJS from 'crypto-js'
 import { CoreData, CoreDataIV } from 'model/CoreData'
 import { LOCAL_STORAGE_CORE_DATA_IV, LOCAL_STORAGE_CORE_DATA } from 'defs/localStorage'
 import { AES_IV_BYTES } from 'defs/crypto'
-import { CHAIN_TICKER_ETH } from 'model/Chain'
-import { getEthAddressFromPrivateKey } from './wallets'
+import { getEthAddressFromPrivateKey, isEthWallet } from './wallets/eth'
 
 export const CORE_DATA_STORAGE_KEYS = [
     LOCAL_STORAGE_CORE_DATA,
@@ -66,7 +65,7 @@ export function saveCoreData(coreData: CoreData, key: string, iv: CoreDataIV) {
 function fixCoreData(coreData: CoreData) {
     coreData.wallets.forEach(wallet => {
         if (!wallet.address && wallet.privateKey) {
-            if (wallet.ticker === CHAIN_TICKER_ETH) {
+            if (isEthWallet(wallet)) {
                 try {
                     wallet.address = getEthAddressFromPrivateKey(wallet.privateKey)
                 } catch (error) {
